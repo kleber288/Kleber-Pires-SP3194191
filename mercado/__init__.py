@@ -16,12 +16,14 @@ def create_app(overrides=None):
     load_dotenv(ROOT / '.env')
     app = Flask(__name__, template_folder=str(ROOT/'templates'), static_folder=None)
     app.config.update(SECRET_KEY=os.getenv('SECRET_KEY'), DATABASE_URL=os.getenv('DATABASE_URL'),
-        STORE_NAME=os.getenv('STORE_NAME','Mercado Viva'), APP_URL=os.getenv('APP_URL','http://127.0.0.1:5000'),
+        STORE_NAME=os.getenv('STORE_NAME','Pixel Loot'), APP_URL=os.getenv('APP_URL','http://127.0.0.1:5000'),
         SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax',
         SESSION_COOKIE_SECURE=os.getenv('APP_ENV')=='production',
         PERMANENT_SESSION_LIFETIME=timedelta(minutes=30), MAX_CONTENT_LENGTH=128*1024,
         WTF_CSRF_TIME_LIMIT=3600)
     if overrides: app.config.update(overrides)
+    if app.config['STORE_NAME'] in ('Mercado Viva', 'Mercado Viva | Projeto acadêmico', 'Supermercado Kleber Pires'):
+        app.config['STORE_NAME'] = 'Pixel Loot'
     if not app.config['SECRET_KEY'] or len(app.config['SECRET_KEY']) < 32 or 'SUBSTITUA' in app.config['SECRET_KEY']:
         raise RuntimeError('Configure SECRET_KEY aleatória com pelo menos 32 caracteres.')
     if not app.config['DATABASE_URL']:
